@@ -1,6 +1,7 @@
 # EVOLVE-BLOCK-START
 """
-Initial float16 vector addition with Triton kernel.
+Float16 vector addition with autotuned Triton kernel using large block sizes
+to maximize HBM3 bandwidth utilization on H100.
 """
 
 import torch
@@ -8,6 +9,18 @@ import triton
 import triton.language as tl
 
 
+@triton.autotune(
+    configs=[
+        triton.Config({'BLOCK_SIZE': 1024}),
+        triton.Config({'BLOCK_SIZE': 2048}),
+        triton.Config({'BLOCK_SIZE': 4096}),
+        triton.Config({'BLOCK_SIZE': 8192}),
+        triton.Config({'BLOCK_SIZE': 16384}),
+        triton.Config({'BLOCK_SIZE': 32768}),
+        triton.Config({'BLOCK_SIZE': 65536}),
+    ],
+    key=['n_elements'],
+)
 @triton.jit
 def vecadd_kernel(
     a_ptr, b_ptr, c_ptr,
@@ -32,8 +45,7 @@ def custom_kernel(data):
     b = b.contiguous()
     c = torch.empty_like(a)
     n_elements = a.numel()
-    BLOCK_SIZE = 1024
-    grid = (triton.cdiv(n_elements, BLOCK_SIZE),)
-    vecadd_kernel[grid](a, b, c, n_elements, BLOCK_SIZE=BLOCK_SIZE)
+    grid = lambda meta: (triton.cdiv(n_elements, meta['BLOCK_SIZE']),)
+    vecadd_kernel[grid](a, b, c, n_elements)
     return c
 # EVOLVE-BLOCK-END

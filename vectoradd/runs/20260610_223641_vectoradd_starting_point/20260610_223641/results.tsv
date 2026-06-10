@@ -1,0 +1,17 @@
+experiment	agent_iteration	commit	time_us	status	description
+1	0	HEAD	60.27	keep	Baseline 'starting_point' — initial benchmark
+2	1	HEAD	70.63	discard	Advisor proposed replacing fixed BLOCK_SIZE=1024 with @triton.autotune over configs [1024, 2048, 409
+3	2	HEAD	32.91	keep	Advisor proposed replacing the custom Triton kernel entirely with plain torch.add(a, b). PyTorch's e
+4	3	HEAD	89.94	discard	Advisor proposed wrapping torch.add in CUDA graph capture keyed on tensor shape to eliminate launch 
+5	4	HEAD	35.28	discard	Advisor proposed a hand-written inline CUDA kernel using uint4 (128-bit) vectorized loads to process
+6	5	HEAD	49.80	discard	Advisor proposed refining the inline CUDA kernel with: (1) block size increased to 512 for higher SM
+7	6	HEAD	32.53	keep	Advisor proposed pre-allocating the output tensor once per shape/dtype/device and using torch.add(a,
+8	7	HEAD	426.00	discard	Advisor proposed wrapping torch.add in torch.compile(mode='reduce-overhead') compiled once at module
+9	8	HEAD	34.96	discard	Advisor proposed calling torch.ops.aten.add.out(a, b, alpha=1, out=c) directly instead of torch.add(
+10	9	HEAD	33.99	discard	Advisor proposed combining the exp #5 inline CUDA structure (uint4 128-bit loads, block=256, 1 uint4
+11	10	HEAD	0.00	crash	Advisor proposed a Triton kernel with streaming cache hints (cache_modifier='.cs') on loads and stor
+12	11	HEAD	47.98	discard	Advisor proposed using c.copy_(a) then c.add_(b) (copy into pre-allocated buffer then in-place add) 
+13	12	HEAD	32.38	keep	Advisor proposed reducing Python-side cache key overhead by replacing the tuple (shape, dtype, devic
+14	13	HEAD	32.16	keep	Advisor proposed pre-binding torch.add as a module-level variable (_torch_add = torch.add) to elimin
+15	14	HEAD	31.96	keep	Advisor proposed eliminating the per-call numel() check by using a _warmed_up flag: after the first 
+16	15	HEAD	32.25	discard	Advisor proposed passing alpha=1 explicitly to torch.add (_torch_add(a, b, alpha=1, out=_cached_out)
