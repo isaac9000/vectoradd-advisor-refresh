@@ -116,8 +116,8 @@ def ny(t):
 LLM_CALLS = 171  # advisor-refresh run total
 
 # ── Plot ──────────────────────────────────────────────────────────────────────
-fig, ax = plt.subplots(figsize=(14, 7.5))
-fig.subplots_adjust(top=0.81)
+fig, ax = plt.subplots(figsize=(14, 8))
+fig.subplots_adjust(top=0.68)
 
 # OpenEvolve — blue
 oe_kx = [it for it, k in zip(oe_iters, oe_kinds) if k == "keep"]
@@ -180,7 +180,7 @@ ax.legend(loc="lower center", bbox_to_anchor=(0.5, 1.01), ncol=4,
           framealpha=0.9, fontsize=10, borderaxespad=0)
 
 # Best-time records above the plot (figure-level text)
-fig.text(0.5, 0.955,
+fig.text(0.5, 0.92,
          f"OpenEvolve best: {oe_best:.2f} μs    |    "
          f"Advisor best: {adv_best:.2f} μs    |    "
          f"Advisor-refresh best: {ref_best:.2f} μs",
