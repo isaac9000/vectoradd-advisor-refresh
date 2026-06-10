@@ -117,7 +117,7 @@ LLM_CALLS = 171  # advisor-refresh run total
 
 # ── Plot ──────────────────────────────────────────────────────────────────────
 fig, ax = plt.subplots(figsize=(14, 8))
-fig.subplots_adjust(top=0.68)
+fig.subplots_adjust(top=0.75)
 
 # OpenEvolve — blue
 oe_kx = [it for it, k in zip(oe_iters, oe_kinds) if k == "keep"]
