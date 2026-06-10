@@ -296,9 +296,9 @@ def _ensure_git_repo(repo_root: str) -> None:
 def _commit_and_clear_epoch(repo_root: str, epoch_dir: str, epoch: int, run_name: str) -> None:
     """Git-commit the epoch directory, then delete all run artifacts so the next epoch starts blind."""
     try:
-        subprocess.run(["git", "add", epoch_dir], cwd=repo_root, check=True, capture_output=True)
+        subprocess.run(["git", "add", "-f", epoch_dir], cwd=repo_root, check=True, capture_output=True)
         result = subprocess.run(
-            ["git", "commit", "-m", f"[refresh] epoch {epoch} — {run_name}"],
+            ["git", "commit", "-m", f"[refresh] {os.path.basename(epoch_dir)} — {run_name}"],
             cwd=repo_root, capture_output=True,
         )
         if result.returncode == 0:
